@@ -1,9 +1,9 @@
-<!doctype html>
+  <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Pari 💗 — I'm Sorry</title>
+<title>Pari 💗 — A Small Sorry from Chazzi 😋</title>
 <style>
   :root{
     --sky1:#dff6ff;
@@ -13,162 +13,269 @@
     --text:#033047;
     --muted:#4b6b7a;
     --radius:18px;
+    --heart-color: #ff6fa6;
     font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
-  body {
-    margin:0;
-    background:linear-gradient(180deg,var(--sky1),var(--sky2));
-    color:var(--text);
-    display:flex; justify-content:center; align-items:center;
-    min-height:100vh; padding:20px;
-  }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--sky1),var(--sky2));color:var(--text)}
+  .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
   .card {
-    width:min(520px, 96vw);
+    width:min(560px,96vw);
     background:white;
     padding:22px;
     border-radius:var(--radius);
     box-shadow:0 20px 50px rgba(0,0,0,0.1);
     position:relative;
+    overflow:visible;
   }
   .header { display:flex; gap:12px; align-items:center; }
   .avatar {
-    width:70px;height:70px;
-    background:var(--sky3);
-    border-radius:16px;
-    display:grid;place-items:center;
-    color:white;font-size:30px;
+    width:70px;height:70px;border-radius:16px;
+    display:grid;place-items:center;background:var(--sky3);color:white;font-size:30px;
     box-shadow:0 10px 25px rgba(0,153,255,0.2);
   }
-  h1 { margin:0;font-size:22px; }
-  .lead { margin:6px 0 0; color:var(--muted); }
-  .msg { margin-top:16px; line-height:1.5; font-size:15px; }
-
-  button {
-    padding:10px 14px; border-radius:12px; border:0;
-    font-size:14px; font-weight:700; cursor:pointer;
+  h1{margin:0;font-size:22px}
+  .lead{margin:6px 0 0;color:var(--muted)}
+  /* gentle swinging animation for the message block */
+  .msg{
+    margin-top:16px;line-height:1.5;font-size:16px;
+    display:block; transform-origin:top center;
+    animation: gentleSwing 3200ms ease-in-out infinite;
   }
-  .btn-primary {
-    background:linear-gradient(90deg,var(--accent),#68c9ff);
-    color:white;
-    box-shadow:0 8px 30px rgba(46,168,246,0.18);
-  }
-  .actions { margin-top:18px; display:flex; gap:10px; align-items:center; }
-
-  /* apology input */
-  .apology-area { display:none; flex-direction:column; gap:8px; margin-top:12px; }
-  textarea {
-    width:100%; min-height:90px; border-radius:10px; padding:12px;
-    border:1px solid rgba(0,0,0,0.1); font-size:14px; resize:vertical;
-  }
-  .result {
-    display:none; margin-top:12px; padding:12px;
-    background:linear-gradient(90deg,#c8edff,#e9f7ff);
-    border-radius:12px;
+  @keyframes gentleSwing {
+    0% { transform: rotate(-1.2deg) translateY(0)}
+    25% { transform: rotate(0.9deg) translateY(-2px)}
+    50% { transform: rotate(-0.6deg) translateY(0)}
+    75% { transform: rotate(0.8deg) translateY(-1px)}
+    100% { transform: rotate(-1.2deg) translateY(0)}
   }
 
-  /* I'm Sorry fullscreen */
-  .sorry-full {
-    position:fixed; inset:0; background:rgba(0,0,0,0.4);
-    display:flex; justify-content:center; align-items:center;
-    visibility:hidden; opacity:0;
-    transition:0.4s ease;
+  .actions{margin-top:18px;display:flex;gap:10px;align-items:center}
+  button{padding:10px 14px;border-radius:12px;border:0;font-size:14px;font-weight:700;cursor:pointer}
+  .btn-primary{background:linear-gradient(90deg,var(--accent),#68c9ff);color:white;box-shadow:0 8px 30px rgba(46,168,246,0.18)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid rgba(2,28,45,0.06)}
+  .apology-area{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  textarea{width:100%;min-height:100px;border-radius:10px;padding:12px;border:1px solid rgba(0,0,0,0.08);font-size:14px;resize:vertical}
+  .small{font-size:13px;color:var(--muted);margin-top:8px}
+  .result{display:none;margin-top:12px;padding:12px;background:linear-gradient(90deg,#c8edff,#e9f7ff);border-radius:12px}
+  /* full screen I'm Sorry */
+  .sorry-full{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.42),rgba(0,0,0,0.55));display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:opacity .35s ease, visibility .35s ease;z-index:999}
+  .sorry-full.show{visibility:visible;opacity:1}
+  .sorry-card{background:linear-gradient(180deg,#ffffff,#e8f7ff);padding:32px;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,0.28);text-align:center;max-width:92%; transform-origin:center; animation: cardEntrance .6s ease both;}
+  @keyframes cardEntrance {
+    from { transform: translateY(10px) scale(.98); opacity:0 }
+    to { transform: translateY(0) scale(1); opacity:1 }
   }
-  .sorry-full.show { visibility:visible; opacity:1; }
-
-  .sorry-box {
-    background:linear-gradient(180deg,#ffffff,#e8f7ff);
-    padding:30px 20px; border-radius:18px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.25);
-    text-align:center; max-width:90%;
-  }
-
-  .marquee-wrap {
-    overflow:hidden; width:100%; margin-top:10px; 
-  }
-  .marquee {
-    display:inline-block; padding-left:100%;
-    animation:flow 6s linear infinite;
-    white-space:nowrap; font-size:32px; font-weight:900; color:#005c91;
-  }
-
-  @keyframes flow {
-    0%{transform:translateX(0)}
-    50%{transform:translateX(-45%)}
-    100%{transform:translateX(0)}
+  /* marquee but with a swinging effect */
+  .marquee-wrap{overflow:hidden;width:100%;margin-top:6px}
+  .marquee{display:inline-block;padding-left:100%;animation:flowSide 6s linear infinite;white-space:nowrap;font-size:36px;font-weight:900;color:#003f66; transform-origin:center; animation-name: flowSide, swingBig; animation-duration:6s, 2400ms; animation-iteration-count: infinite, infinite; animation-timing-function: linear, ease-in-out;}
+  @keyframes flowSide{0%{transform:translateX(0)}50%{transform:translateX(-45%)}100%{transform:translateX(0)}}
+  @keyframes swingBig {
+    0%{ transform: rotate(-2deg)}
+    25%{ transform: rotate(2deg)}
+    50%{ transform: rotate(-1deg)}
+    75%{ transform: rotate(1.5deg)}
+    100%{ transform: rotate(-2deg)}
   }
 
+  /* falling hearts container - sits above confetti canvas */
+  .hearts-container{pointer-events:none; position:fixed; inset:0; overflow:hidden; z-index:1001}
+
+  .heart {
+    position:absolute;
+    font-size:20px;
+    will-change: transform, opacity;
+    transform-origin: center;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-20vh) translateX(0) scale(0.8); opacity:1 }
+    100% { transform: translateY(110vh) translateX(40px) scale(1.05); opacity:0.02 }
+  }
+
+  /* confetti canvas */
+  #confettiCanvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1000}
+
+  @media (max-width:420px){.marquee{font-size:26px}.avatar{width:56px;height:56px}}
 </style>
 </head>
 <body>
+<canvas id="confettiCanvas"></canvas>
+<div class="hearts-container" id="heartsContainer" aria-hidden="true"></div>
 
-<div class="card">
-  <div class="header">
-    <div class="avatar">💗</div>
-    <div>
-      <h1>For Pari 💗</h1>
-      <p class="lead">Chazzi 😋 wants to say something...</p>
+<div class="center">
+  <div class="card" role="main" aria-labelledby="title">
+    <div class="header">
+      <div class="avatar" aria-hidden="true">💗</div>
+      <div>
+        <h1 id="title">For Pari 💗</h1>
+        <p class="lead">A small, heartfelt message from Chazzi 😋</p>
+      </div>
     </div>
-  </div>
 
-  <div class="msg">
-    Hey <strong>Pari</strong>, something small…  
-    Can you please say sorry to <strong>Chazzi</strong>?  
-    Just a tiny apology can fix everything and make his heart soft again. 💙
-  </div>
+    <div class="msg" id="messageText">
+      <!-- Chazzi is apologising to Pari — updated personalized text -->
+      <strong>Pari —</strong> I'm really sorry pariiii🥰 I hope this makes you smile.
+      <div class="small">This is from my heart — read it, take your time, and if you want, reply below. 💙</div>
+    </div>
 
-  <div class="actions">
-    <button class="btn-primary" id="askBtn">Write an apology</button>
-  </div>
+    <div class="actions">
+      <button class="btn-primary" id="showSorryBtn">Read the full "I'm Sorry"</button>
+      <button class="btn-ghost" id="letType">Let Pari reply</button>
+    </div>
 
-  <div class="apology-area" id="apologyArea">
-    <textarea id="apologyText" placeholder="I'm sorry for..."></textarea>
-    <button class="btn-primary" id="sendBtn">Send</button>
-  </div>
+    <div class="apology-area" id="replyArea" style="display:none">
+      <label class="small" for="replyInput">Write your reply (optional):</label>
+      <textarea id="replyInput" placeholder="Hey Chazzi..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="btn-primary" id="sendReply">Send Reply</button>
+        <button class="btn-ghost" id="cancelReply">Cancel</button>
+      </div>
+    </div>
 
-  <div class="result" id="resultBox"></div>
+    <div class="result" id="resultBox" style="display:none"></div>
+  </div>
 </div>
 
-<!-- Fullscreen "I'm Sorry" -->
-<div class="sorry-full" id="sorryFull">
-  <div class="sorry-box">
-    <div class="marquee-wrap">
-      <div class="marquee">I'M SO SORRY PARI 💗 — PLEASE FORGIVE ME — I LOVE YOU —</div>
+<!-- I'm Sorry full screen -->
+<div class="sorry-full" id="sorryFull" role="dialog" aria-hidden="true">
+  <div class="sorry-card" role="document">
+    <div style="font-size:18px;color:#00405a;font-weight:700">Chazzi says...</div>
+    <div class="marquee-wrap" aria-hidden="false">
+      <div class="marquee" id="marqueeText">I'M SO SORRY PARIIII 🥰 — PLEASE FORGIVE ME — I LOVE YOU — I'M SO SORRY PARIIII 🥰</div>
     </div>
-    <button class="btn-primary" id="closeSorry" style="margin-top:20px;">Close</button>
+    <div style="margin-top:18px;display:flex;gap:10px;justify-content:center">
+      <button class="btn-primary" id="closeSorry">Close</button>
+      <button class="btn-ghost" id="replay">Replay</button>
+    </div>
   </div>
 </div>
 
 <script>
-const askBtn = document.getElementById("askBtn");
-const apologyArea = document.getElementById("apologyArea");
-const sendBtn = document.getElementById("sendBtn");
-const apologyText = document.getElementById("apologyText");
-const resultBox = document.getElementById("resultBox");
-const sorryFull = document.getElementById("sorryFull");
-const closeSorry = document.getElementById("closeSorry");
+/* Elements */
+const showSorryBtn = document.getElementById('showSorryBtn');
+const letTypeBtn = document.getElementById('letType');
+const replyArea = document.getElementById('replyArea');
+const sendReply = document.getElementById('sendReply');
+const cancelReply = document.getElementById('cancelReply');
+const replyInput = document.getElementById('replyInput');
+const resultBox = document.getElementById('resultBox');
+const sorryFull = document.getElementById('sorryFull');
+const closeSorry = document.getElementById('closeSorry');
+const replay = document.getElementById('replay');
+const marqueeText = document.getElementById('marqueeText');
+const heartsContainer = document.getElementById('heartsContainer');
 
-askBtn.onclick = () => {
-  apologyArea.style.display = "flex";
-};
-
-sendBtn.onclick = () => {
-  const text = apologyText.value.trim();
-  if(!text){
-    resultBox.style.display = "block";
-    resultBox.innerHTML = "Please type something for Chazzi 😋";
+/* Events */
+showSorryBtn.addEventListener('click', ()=> {
+  sorryFull.classList.add('show');
+  fireConfetti(140);
+  startHearts(18); // spawn hearts
+});
+letTypeBtn.addEventListener('click', ()=> {
+  replyArea.style.display = 'flex';
+  replyInput.focus();
+});
+sendReply.addEventListener('click', ()=> {
+  const txt = replyInput.value.trim();
+  if(!txt){
+    resultBox.style.display = 'block';
+    resultBox.textContent = "If you'd like, type a short reply. Or just close this.";
     return;
   }
-  resultBox.style.display = "block";
-  resultBox.innerHTML = "<strong>Pari said:</strong> " + text;
+  resultBox.style.display = 'block';
+  resultBox.innerHTML = `<strong>Pari replied:</strong> ${escapeHtml(txt)}`;
+  replyInput.value = '';
+  replyArea.style.display = 'none';
+});
+cancelReply.addEventListener('click', ()=> {
+  replyArea.style.display = 'none';
+  replyInput.value = '';
+});
+closeSorry.addEventListener('click', ()=> {
+  sorryFull.classList.remove('show');
+});
+replay.addEventListener('click', ()=> {
+  // restart marquee animation
+  marqueeText.style.animation = 'none';
+  void marqueeText.offsetWidth;
+  marqueeText.style.animation = null;
+  fireConfetti(100);
+  startHearts(12);
+});
 
-  apologyArea.style.display = "none";
-  sorryFull.classList.add("show");
-};
+/* helpers */
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-closeSorry.onclick = () => {
-  sorryFull.classList.remove("show");
-};
+/* ===== confetti (simple) ===== */
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext && canvas.getContext('2d');
+let W = innerWidth, H = innerHeight;
+if(ctx){ canvas.width = W; canvas.height = H; window.addEventListener('resize', ()=>{ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }); }
+let confettiPieces = [];
+function rand(min,max){ return Math.random()*(max-min)+min; }
+function fireConfetti(count=100){
+  if(!ctx) return;
+  confettiPieces = [];
+  for(let i=0;i<count;i++){
+    confettiPieces.push({
+      x: rand(0,W), y: rand(-H,0), w: rand(6,12), h: rand(8,16),
+      vx: rand(-0.6,0.6), vy: rand(2,6), rot: rand(0,360), rotSpeed: rand(-6,6),
+      color: `hsl(${Math.floor(rand(340,360))} ${Math.floor(rand(70,95))}% ${Math.floor(rand(45,65))}%)`
+    });
+  }
+  requestAnimationFrame(confStep);
+}
+function confStep(){
+  ctx.clearRect(0,0,W,H);
+  for(let p of confettiPieces){
+    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.rotSpeed;
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+    ctx.fillStyle = p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+  }
+  confettiPieces = confettiPieces.filter(p=>p.y < H+50);
+  if(confettiPieces.length) requestAnimationFrame(confStep); else if(ctx) ctx.clearRect(0,0,W,H);
+}
+
+/* ===== falling hearts ===== */
+function createHeart(size, left, duration, delay, hue){
+  const span = document.createElement('div');
+  span.className = 'heart';
+  span.style.left = left + 'px';
+  span.style.fontSize = size + 'px';
+  span.style.opacity = 0.95;
+  span.style.color = `hsl(${hue} 90% 60%)`;
+  span.style.animationDuration = duration + 's';
+  span.style.top = '-' + (size + 20) + 'px';
+  span.style.transform = `translateX(${(Math.random()*40-20)}px)`;
+  span.style.transition = 'transform .2s ease';
+  span.innerText = '💗';
+  heartsContainer.appendChild(span);
+  // remove after duration + small buffer
+  setTimeout(()=> {
+    if(span && span.parentNode) span.parentNode.removeChild(span);
+  }, (duration*1000)+600 + (delay*1000));
+}
+
+function startHearts(count=12){
+  // spawn over 1.6s
+  const width = window.innerWidth;
+  for(let i=0;i<count;i++){
+    const left = Math.floor(Math.random()*width);
+    const size = Math.floor(rand(18,44));
+    const duration = rand(3.2,6.2);
+    const delay = rand(0,1.6);
+    const hue = Math.floor(rand(330,360));
+    setTimeout(()=> createHeart(size, left, duration, delay, hue), Math.floor(delay*1000) + i*50);
+  }
+}
+
+/* accessibility: Esc to close */
+document.addEventListener('keydown', (e)=> {
+  if(e.key === 'Escape'){
+    if(sorryFull.classList.contains('show')) sorryFull.classList.remove('show');
+    replyArea.style.display = 'none';
+  }
+});
 </script>
-
 </body>
 </html>
